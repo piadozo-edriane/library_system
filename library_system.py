@@ -27,9 +27,10 @@ class Library:
         }
 
     }
-    def __init__(self, user_name, user_id):
+    def __init__(self, user_name, user_id, user_role):
         self.user_name = user_name
         self.user_id = user_id
+        self.user_role = user_role
         Library.account_number += 1
    
     def show_books ():
@@ -69,7 +70,6 @@ class Library:
           print (f"Error: {message}")
           return
        
-
        if user_role == "Admin":
           print ("Welcome admin")
           Library.register_account(user_role)
@@ -95,7 +95,7 @@ class Library:
         except ValueError as message:
            print (f"Error: {message}")
            return
-        account = Library(user_name, user_id)
+        account = Library(user_name, user_id,user_role)
 
         if user_role == "Admin":
            Library.list_employee_account.append(account)
@@ -108,12 +108,13 @@ class Library:
          print (f"Your name is: {self.user_name}")
          print (f"Your user id is: {self.user_id}")
          print (f"Your accounter number is: {self.account_number}")
+         print (f"Your role is: {self.user_role}")
 
-    def show_seperate_information (user_role):
-         if user_role == "Admin" and not Library.list_employee_account:
+    def show_seperate_information (self):
+         if self.user_role == "Admin" and Library.list_employee_account:
             print ("No admin accounts")
             return
-         elif user_role == "Student" and not Library.list_student_account:
+         elif self.user_role == "Student" and Library.list_student_account:
             print ("No student accounts")
             return
    
@@ -140,7 +141,41 @@ class Library:
                print ("No account number")
       
     def borrw_books ():
-      
+      if user_role == "Admin" and not Library.list_employee_account:
+         print ("No admin accounts")
+         return
+      elif user_role == "Student" and not Library.list_student_account:
+         print ("No student accounts")
+         return
+
+      try:
+         account_number = int(input("Enter your account number: "))
+      except ValueError:
+         print ("Enter a valid account number")
+         return
+
+      try:
+         num_of_books = int(input("Enter the number of books: "))
+      except ValueError:
+         print ("Should not contain a alpha")
+             
+      for num in range (num_of_books):
+         genre_of_books = input("Enter the genre of the books: ")
+         if genre_of_books in Library.list_of_book:
+            author_of_books = input("Enter the author of the book: ")
+
+            if author_of_books in Library.list_of_book[genre_of_books]:
+               value = Library.list_of_book[genre_of_books][author_of_books]
+               Library.borrwed_books.append(value)
+
+               print (Library.borrwed_books)
+            else:
+               print ("The author of the book is not here")
+
+         else:
+            print ("There's no genre of book you are looking for")
+         
+         
 
 while True:
    os.system("cls")
@@ -170,6 +205,8 @@ while True:
          Library.show_seperate_information(user_role)
          input()
       case "4":
+         os.system("cls")
+         Library.borrw_books()
          input()
       case _:
          print ("Invalid choice")
